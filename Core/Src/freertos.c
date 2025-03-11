@@ -22,6 +22,7 @@
 #include "task.h"
 #include "main.h"
 #include "cmsis_os.h"
+#include "lvgl.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -50,6 +51,11 @@
 osThreadId defaultTaskHandle;
 osThreadId LCDTaskHandle;
 osThreadId TIMETask03Handle;
+osThreadId LM75TaskHandle;
+osThreadId ADCTaskHandle;
+osThreadId LEDTaskHandle;
+osThreadId BEEPTaskHandle;
+osMutexId myMutexHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
@@ -59,11 +65,30 @@ osThreadId TIMETask03Handle;
 void StartDefaultTask(void const * argument);
 void StartLCDTask(void const * argument);
 void StartTask03(void const * argument);
+void StartLM75Task(void const * argument);
+void StartADCTask(void const * argument);
+void StartLEDTask(void const * argument);
+void StartBEEPTask(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /* GetIdleTaskMemory prototype (linked to static allocation support) */
 void vApplicationGetIdleTaskMemory( StaticTask_t **ppxIdleTaskTCBBuffer, StackType_t **ppxIdleTaskStackBuffer, uint32_t *pulIdleTaskStackSize );
+
+/* Hook prototypes */
+void vApplicationTickHook(void);
+
+/* USER CODE BEGIN 3 */
+__weak void vApplicationTickHook( void )
+{
+   /* This function will be called by each tick interrupt if
+   configUSE_TICK_HOOK is set to 1 in FreeRTOSConfig.h. User code can be
+   added here, but the tick hook is called from an interrupt context, so
+   code must not attempt to block, and only the interrupt safe FreeRTOS API
+   functions can be used (those that end in FromISR()). */
+	lv_tick_inc(1);
+}
+/* USER CODE END 3 */
 
 /* USER CODE BEGIN GET_IDLE_TASK_MEMORY */
 static StaticTask_t xIdleTaskTCBBuffer;
@@ -87,6 +112,10 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN Init */
 
   /* USER CODE END Init */
+  /* Create the mutex(es) */
+  /* definition and creation of myMutex */
+  osMutexDef(myMutex);
+  myMutexHandle = osMutexCreate(osMutex(myMutex));
 
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
@@ -110,12 +139,28 @@ void MX_FREERTOS_Init(void) {
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of LCDTask */
-  osThreadDef(LCDTask, StartLCDTask, osPriorityIdle, 0, 128);
+  osThreadDef(LCDTask, StartLCDTask, osPriorityNormal, 0, 512);
   LCDTaskHandle = osThreadCreate(osThread(LCDTask), NULL);
 
   /* definition and creation of TIMETask03 */
-  osThreadDef(TIMETask03, StartTask03, osPriorityIdle, 0, 128);
+  osThreadDef(TIMETask03, StartTask03, osPriorityNormal, 0, 128);
   TIMETask03Handle = osThreadCreate(osThread(TIMETask03), NULL);
+
+  /* definition and creation of LM75Task */
+  osThreadDef(LM75Task, StartLM75Task, osPriorityIdle, 0, 128);
+  LM75TaskHandle = osThreadCreate(osThread(LM75Task), NULL);
+
+  /* definition and creation of ADCTask */
+  osThreadDef(ADCTask, StartADCTask, osPriorityIdle, 0, 128);
+  ADCTaskHandle = osThreadCreate(osThread(ADCTask), NULL);
+
+  /* definition and creation of LEDTask */
+  osThreadDef(LEDTask, StartLEDTask, osPriorityIdle, 0, 128);
+  LEDTaskHandle = osThreadCreate(osThread(LEDTask), NULL);
+
+  /* definition and creation of BEEPTask */
+  osThreadDef(BEEPTask, StartBEEPTask, osPriorityIdle, 0, 128);
+  BEEPTaskHandle = osThreadCreate(osThread(BEEPTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -174,10 +219,82 @@ __weak void StartTask03(void const * argument)
   /* Infinite loop */
   for(;;)
   {
-	  HAL_GPIO_TogglePin(LED1_GPIO_Port,LED1_Pin);
-    osDelay(1000);
+
+    osDelay(1);
   }
   /* USER CODE END StartTask03 */
+}
+
+/* USER CODE BEGIN Header_StartLM75Task */
+/**
+* @brief Function implementing the LM75Task thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartLM75Task */
+__weak void StartLM75Task(void const * argument)
+{
+  /* USER CODE BEGIN StartLM75Task */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartLM75Task */
+}
+
+/* USER CODE BEGIN Header_StartADCTask */
+/**
+* @brief Function implementing the ADCTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartADCTask */
+__weak void StartADCTask(void const * argument)
+{
+  /* USER CODE BEGIN StartADCTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartADCTask */
+}
+
+/* USER CODE BEGIN Header_StartLEDTask */
+/**
+* @brief Function implementing the LEDTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartLEDTask */
+__weak void StartLEDTask(void const * argument)
+{
+  /* USER CODE BEGIN StartLEDTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartLEDTask */
+}
+
+/* USER CODE BEGIN Header_StartBEEPTask */
+/**
+* @brief Function implementing the BEEPTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_StartBEEPTask */
+__weak void StartBEEPTask(void const * argument)
+{
+  /* USER CODE BEGIN StartBEEPTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END StartBEEPTask */
 }
 
 /* Private application code --------------------------------------------------*/

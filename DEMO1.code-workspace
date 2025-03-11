@@ -6,6 +6,9 @@
 	],
 	"settings": {
 		"files.encoding": "gb2312",
-		"files.autoGuessEncoding": false
+		"files.autoGuessEncoding": false,
+		"files.associations": {
+			"cstdint": "c"
+		}
 	}
 }

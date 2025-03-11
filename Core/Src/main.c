@@ -30,6 +30,10 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "st7789.h"
+#include "key.h"
+#include "LM75AD.h"
+#include "lvgl.h"
+#include "lv_port_disp.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -50,7 +54,10 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+double temperature=0;
+volatile  float voltage=0;  
+char buffer[100];		
+volatile uint16_t adcValue = 0; // ADC
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -62,7 +69,13 @@ void MX_FREERTOS_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
+extern osMutexId myMutexHandle;
+volatile int con=0;
+  char localBuffer[32];
+  char timeBuffer[32];
+  char dateBuffer[32];
+  RTC_TimeTypeDef sTime;
+ RTC_DateTypeDef sDate;
 /* USER CODE END 0 */
 
 /**
@@ -174,20 +187,164 @@ void SystemClock_Config(void)
 void StartLCDTask(void const * argument)
 {
   /* USER CODE BEGIN StartLCDTask */
-   osDelay(100);
-   ST7789_Init();
+//   osDelay(100);
+//   ST7789_Init();
+//   ST7789_Fill_Color(BLACK); // 
+//   // ���ڼ��仯�ı���
+//   double last_temp = -100.0;
+//   float last_voltage = -1.0;
+//   uint8_t last_second = 0xFF;
+//   uint8_t last_minute = 0xFF;
+//   uint8_t last_hour = 0xFF;
+//   uint8_t last_day = 0;
+//   uint8_t last_month = 0;
+//   uint8_t last_year = 0;
    
- 
+   // ����ʾһ�ι̶�����
+//   sprintf(localBuffer, "Temperature:      C");
+//   ST7789_WriteString(5, 10, localBuffer, Font_11x18, WHITE, BLACK);
+//   
+//   sprintf(localBuffer, "Voltage:      V");
+//   ST7789_WriteString(5, 40, localBuffer, Font_11x18, YELLOW, BLACK);
+//   
+//   ST7789_WriteString(5, 70, "Time:         ", Font_11x18, WHITE, BLACK);
+//   ST7789_WriteString(5, 100, "Date:         ", Font_11x18, WHITE, BLACK);
+
+
+  lv_init();	
+  lv_port_disp_init();
   
+  lv_obj_t * led1  = lv_led_create(lv_scr_act());
+    lv_obj_align(led1, LV_ALIGN_CENTER, -80, 0);
+    lv_led_off(led1);
+ 
+    /*Copy the previous LED and set a brightness*/
+    lv_obj_t * led2  = lv_led_create(lv_scr_act());
+    lv_obj_align(led2, LV_ALIGN_CENTER, 0, 0);
+    lv_led_set_brightness(led2, 150);
+    lv_led_set_color(led2, lv_palette_main(LV_PALETTE_RED));
+ 
+    /*Copy the previous LED and switch it ON*/
+    lv_obj_t * led3  = lv_led_create(lv_scr_act());
+    lv_obj_align(led3, LV_ALIGN_CENTER, 80, 0);
+    lv_led_on(led3);
   /* Infinite loop */
   for(;;)
   {
-      ST7789_Test();
-      osDelay(1000);
-      ST7789_TestColors();
+    
+//    //ST7789_DrawFilledRectangle(192, 10, 224, 40, BLACK);
+    osMutexWait(myMutexHandle, osWaitForever);
+	lv_task_handler();
+//    
+//    if(last_temp != temperature) {
+//      sprintf(localBuffer, "%.2f", temperature);
+//      ST7789_WriteString(141, 10, localBuffer, Font_11x18, WHITE, BLACK);
+//      last_temp = temperature;
+//    }
+//    
+//    // ֻˢ�µ�ѹ��ֵ����
+//    if(last_voltage != voltage) {
+//      sprintf(localBuffer, "%.2f", voltage);
+//      ST7789_WriteString(101, 40, localBuffer, Font_11x18, YELLOW, BLACK);
+//      last_voltage = voltage;
+//    }
+//    
+//    // ��ȡʱ�������?
+//    HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+//    HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
+//    
+//    // ֻ�����?ʱˢ��ʱ��
+//    if(last_second != sTime.Seconds || last_minute != sTime.Minutes || last_hour != sTime.Hours) {
+//      sprintf(timeBuffer, "%02d:%02d:%02d", sTime.Hours, sTime.Minutes, sTime.Seconds);
+//      ST7789_WriteString(60, 70, timeBuffer, Font_11x18, WHITE, BLACK);
+//      last_second = sTime.Seconds;
+//      last_minute = sTime.Minutes;
+//      last_hour = sTime.Hours;
+//    }
+//    
+//    // ֻ�����ڱ仯ʱˢ������
+//    if(last_day != sDate.Date || last_month != sDate.Month || last_year != sDate.Year) {
+//      sprintf(dateBuffer, "%02d-%02d-%04d", sDate.Date, sDate.Month, 2000 + sDate.Year);
+//      ST7789_WriteString(60, 100, dateBuffer, Font_11x18, WHITE, BLACK);
+//      last_day = sDate.Date;
+//      last_month = sDate.Month;
+//      last_year = sDate.Year;
+//    }
+//    
+//    // ��С�ӳ������Ӧ��?
+//    osDelay(10);
+   osMutexRelease(myMutexHandle);
+   osDelay(10);
   }
   /* USER CODE END StartLCDTask */
 }
+ void StartADCTask(void const * argument)
+{
+  /* USER CODE BEGIN StartADCTask */
+	//hadc1.Instance->CR2 |= ADC_CR2_DDS;
+    HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&adcValue, 1);
+  /* Infinite loop */
+  for(;;)
+  {
+     // ADCֵ
+	
+     voltage = (float)adcValue * 3.3f / 4095.0f;
+    
+     osDelay(100);
+  }
+  /* USER CODE END StartADCTask */
+}
+void StartTask03(void const * argument)
+{
+  /* USER CODE BEGIN StartTask03 */
+	BTN_Init();
+  /* Infinite loop */
+  for(;;)
+  {
+	button_ticks();
+    osDelay(5);
+  }
+  /* USER CODE END StartTask03 */
+}
+
+void StartLM75Task(void const * argument)
+{
+  /* USER CODE BEGIN StartLM75Task */
+	LM75AD_Init();
+  /* Infinite loop */
+  for(;;)
+  {
+	temperature = LM75AD_GetTemp();
+    osDelay(500);
+  }
+  /* USER CODE END StartLM75Task */
+}
+
+void StartRTCTask(void const * argument)
+{
+  /* USER CODE BEGIN StartRTCTask */
+ 
+  /* Infinite loop */
+  for(;;)
+  {
+
+    
+    osDelay(1000);
+  }
+  /* USER CODE END StartRTCTask */
+}
+
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef* hadc)
+{
+  if(hadc->Instance == ADC1) {
+        
+        HAL_ADC_Stop_DMA(&hadc1);
+        HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&adcValue, 1);
+  
+  }
+}
+
+
 /* USER CODE END 4 */
 
 /**

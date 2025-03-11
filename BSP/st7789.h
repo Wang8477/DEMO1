@@ -289,11 +289,13 @@ void ST7789_WriteDataDMA(uint8_t *buff, size_t buff_size);
 void ST7789_DrawFastHLine(uint16_t x, uint16_t y, uint16_t w, uint16_t color);
 void ST7789_DrawFastVLine(uint16_t x, uint16_t y, uint16_t h, uint16_t color);
 
+void ST7789_DrawFastFilledRectangle_xy(uint16_t x, uint16_t y, uint16_t x2, uint16_t y2, uint16_t color);
 void ST7789_DrawFastFilledRectangle(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color);
 void ST7789_DrawFastFilledTriangle(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, uint16_t x3, uint16_t y3, uint16_t color);
 void ST7789_DrawFastFilledCircle(int16_t x0, int16_t y0, int16_t r, uint16_t color);
 
 void ST7789_WriteFastString(uint16_t x, uint16_t y, const char *str, FontDef font, uint16_t color, uint16_t bgcolor);
+void ST7789_DrawColorBitmap(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const uint16_t* color_array);
 
 #ifndef ST7789_ROTATION
     #error You should at least choose a display rotation!

@@ -855,6 +855,58 @@ void ST7789_DrawFastHLine(uint16_t x, uint16_t y, uint16_t w, uint16_t color)
  * @param color -> color of the Rectangle line
  * @return none
  */
+void ST7789_DrawFastFilledRectangle_xy(uint16_t x, uint16_t y, uint16_t x2, uint16_t y2, uint16_t color) 
+{
+    /* Validate input */
+	uint16_t w,h;
+	w=x2-x+1;
+	h=y2-y+1;
+    if (x >= ST7789_WIDTH || y >= ST7789_HEIGHT) {
+        return; // Out of bounds, exit
+    }
+
+    /* Correct width and height if rectangle overflows */
+    if ((x + w) > ST7789_WIDTH) {
+        w = ST7789_WIDTH - x;
+    }
+    if ((y + h) > ST7789_HEIGHT) {
+        h = ST7789_HEIGHT - y;
+    }
+
+    /* Set the window area */
+    ST7789_SetAddressWindow(x, y, x + w - 1, y + h - 1);
+    ST7789_Select();
+
+    #ifdef USE_DMA
+    /* Fill the rectangle using DMA */
+    uint32_t total_pixels = w * h;
+    uint32_t buffer_size = sizeof(disp_buf) / 2; // Buffer size in 16-bit pixels
+
+    for (uint32_t i = 0; i < total_pixels / buffer_size; i++) {
+        memset_16((uint16_t*)disp_buf, color, buffer_size); // Fill buffer with color
+        SendBuffer((uint16_t*)disp_buf, buffer_size);       // Send filled buffer
+    }
+
+    /* Handle the remainder if total_pixels is not a multiple of buffer_size */
+    uint32_t remaining_pixels = total_pixels % buffer_size;
+    if (remaining_pixels > 0) {
+        memset_16((uint16_t*)disp_buf, color, remaining_pixels);
+        SendBuffer((uint16_t*)disp_buf, remaining_pixels);
+    }
+
+    #else
+    /* CPU-based rectangle filling */
+    for (uint16_t i = 0; i < h; i++) {
+        for (uint16_t j = 0; j < w; j++) {
+            uint8_t data[] = {color >> 8, color & 0xFF};
+            ST7789_WriteData(data, sizeof(data));
+        }
+    }
+    #endif
+
+    ST7789_UnSelect();
+}
+
 void ST7789_DrawFastFilledRectangle(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color) 
 {
     /* Validate input */
@@ -1030,5 +1082,59 @@ void ST7789_WriteFastString(uint16_t x, uint16_t y, const char *str, FontDef fon
         x += font.width;
         str++;
     }
+    ST7789_UnSelect();
+}
+/**
+ * 绘制LVGL颜色缓冲区到屏幕
+ * @param x1 起始X坐标
+ * @param y1 起始Y坐标
+ * @param x2 结束X坐标
+ * @param y2 结束Y坐标
+ * @param color_array 颜色缓冲区指针
+ */
+void ST7789_DrawColorBitmap(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2, const uint16_t* color_array) 
+{
+    uint16_t w = x2 - x1 + 1;
+    uint16_t h = y2 - y1 + 1;
+    
+    if (x1 >= ST7789_WIDTH || y1 >= ST7789_HEIGHT) {
+        return; // 超出范围
+    }
+
+    // 设置显示窗口
+    ST7789_SetAddressWindow(x1, y1, x2, y2);
+    ST7789_Select();
+    ST7789_DC_Set();  // 数据模式
+    
+    #ifdef USE_DMA
+    // 使用DMA传输数据
+    uint32_t total_pixels = w * h;
+    uint32_t buffer_size = sizeof(disp_buf) / 2;  // 缓冲区大小（16位像素个数）
+    uint32_t sent_pixels = 0;
+    
+    while (sent_pixels < total_pixels) {
+        // 计算本次传输的像素数量
+        uint32_t pixels_to_send = (total_pixels - sent_pixels) < buffer_size ? 
+                                  (total_pixels - sent_pixels) : buffer_size;
+        
+        // 将数据复制到DMA缓冲区
+        for (uint32_t i = 0; i < pixels_to_send; i++) {
+            disp_buf[i] = ((color_array[sent_pixels + i] >> 8) | (color_array[sent_pixels + i] << 8));
+        }
+        
+        // 使用DMA发送缓冲区数据
+        SendBuffer((uint16_t*)disp_buf, pixels_to_send);
+        
+        // 更新已发送的像素计数
+        sent_pixels += pixels_to_send;
+    }
+    #else
+    // 非DMA方式，按照原先的CPU传输
+    for (uint32_t i = 0; i < w * h; i++) {
+        uint8_t data[] = {color_array[i] >> 8, color_array[i] & 0xFF};
+        HAL_SPI_Transmit(&ST7789_SPI_PORT, data, 2, HAL_MAX_DELAY);
+    }
+    #endif
+    while(hspi1.TxXferCount > 0);
     ST7789_UnSelect();
 }
