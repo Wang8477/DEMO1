@@ -34,6 +34,10 @@
 #include "LM75AD.h"
 #include "lvgl.h"
 #include "lv_port_disp.h"
+#include "lv_port_indev.h"
+#include "gui_guider.h"
+#include "events_init.h"
+#include "custom.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -76,6 +80,7 @@ volatile int con=0;
   char dateBuffer[32];
   RTC_TimeTypeDef sTime;
  RTC_DateTypeDef sDate;
+ lv_ui guider_ui;
 /* USER CODE END 0 */
 
 /**
@@ -213,21 +218,12 @@ void StartLCDTask(void const * argument)
 
   lv_init();	
   lv_port_disp_init();
+  lv_port_indev_init();
+  setup_ui(&guider_ui);
+    events_init(&guider_ui);
+    custom_init(&guider_ui);
   
-  lv_obj_t * led1  = lv_led_create(lv_scr_act());
-    lv_obj_align(led1, LV_ALIGN_CENTER, -80, 0);
-    lv_led_off(led1);
- 
-    /*Copy the previous LED and set a brightness*/
-    lv_obj_t * led2  = lv_led_create(lv_scr_act());
-    lv_obj_align(led2, LV_ALIGN_CENTER, 0, 0);
-    lv_led_set_brightness(led2, 150);
-    lv_led_set_color(led2, lv_palette_main(LV_PALETTE_RED));
- 
-    /*Copy the previous LED and switch it ON*/
-    lv_obj_t * led3  = lv_led_create(lv_scr_act());
-    lv_obj_align(led3, LV_ALIGN_CENTER, 80, 0);
-    lv_led_on(led3);
+
   /* Infinite loop */
   for(;;)
   {
@@ -282,13 +278,13 @@ void StartLCDTask(void const * argument)
 {
   /* USER CODE BEGIN StartADCTask */
 	//hadc1.Instance->CR2 |= ADC_CR2_DDS;
-    HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&adcValue, 1);
+   // HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&adcValue, 1);
   /* Infinite loop */
   for(;;)
   {
      // ADCֵ
 	
-     voltage = (float)adcValue * 3.3f / 4095.0f;
+    // voltage = (float)adcValue * 3.3f / 4095.0f;
     
      osDelay(100);
   }

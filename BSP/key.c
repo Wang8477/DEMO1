@@ -1,5 +1,7 @@
 #include "key.h"
-
+#include "lvgl.h"  
+#include "cmsis_os.h"
+#include "lv_port_indev.h"
 
 struct Button btn1;           //结构化按键
 struct Button btn2;
@@ -9,10 +11,10 @@ struct Button btn4;
 
 void BTN_Init()
 {
-	button_init(&btn1, read_button_GPIO, 0, 0);
-	button_init(&btn2, read_button_GPIO, 0, 1);
-	button_init(&btn3, read_button_GPIO, 0, 2);
-	button_init(&btn4, read_button_GPIO, 0, 3);    //初始化按键
+	Button_init(&btn1, read_button_GPIO, 0, 0);
+	Button_init(&btn2, read_button_GPIO, 0, 1);
+	Button_init(&btn3, read_button_GPIO, 0, 2);
+	Button_init(&btn4, read_button_GPIO, 0, 3);    //初始化按键
 	button_attach(&btn1, SINGLE_CLICK, BTN1_SINGLE_Click_Handler);
 	button_attach(&btn2, SINGLE_CLICK, BTN2_SINGLE_Click_Handler);
 	button_attach(&btn3, SINGLE_CLICK, BTN3_SINGLE_Click_Handler);
@@ -24,17 +26,20 @@ void BTN_Init()
 	button_start(&btn4);
 }
 
-void  BTN1_SINGLE_Click_Handler()
+void BTN1_SINGLE_Click_Handler()
 {
-  HAL_GPIO_TogglePin(LED3_GPIO_Port ,LED3_Pin);
-	HAL_GPIO_TogglePin(LED2_GPIO_Port ,LED2_Pin);
-	HAL_GPIO_TogglePin(LED1_GPIO_Port ,LED1_Pin);
-}
 
+    HAL_GPIO_TogglePin(LED3_GPIO_Port, LED3_Pin);
+    HAL_GPIO_TogglePin(LED2_GPIO_Port, LED2_Pin);
+    HAL_GPIO_TogglePin(LED1_GPIO_Port, LED1_Pin);
+
+    
+}
 
 void  BTN2_SINGLE_Click_Handler()
 {
-	  HAL_GPIO_TogglePin(LED3_GPIO_Port ,LED3_Pin);
+
+	HAL_GPIO_TogglePin(LED3_GPIO_Port ,LED3_Pin);
 	HAL_GPIO_TogglePin(LED2_GPIO_Port ,LED2_Pin);
 	HAL_GPIO_TogglePin(LED1_GPIO_Port ,LED1_Pin);
 }
@@ -42,15 +47,17 @@ void  BTN2_SINGLE_Click_Handler()
 
 void BTN3_LONG_PRESS_START_Handler()
 {
-	  HAL_GPIO_TogglePin(LED3_GPIO_Port ,LED3_Pin);
+	HAL_GPIO_TogglePin(LED3_GPIO_Port ,LED3_Pin);
 	HAL_GPIO_TogglePin(LED2_GPIO_Port ,LED2_Pin);
 	HAL_GPIO_TogglePin(LED1_GPIO_Port ,LED1_Pin);
+
 }
 
 
 void  BTN3_SINGLE_Click_Handler()
 {
-	  HAL_GPIO_TogglePin(LED3_GPIO_Port ,LED3_Pin);
+
+	HAL_GPIO_TogglePin(LED3_GPIO_Port ,LED3_Pin);
 	HAL_GPIO_TogglePin(LED2_GPIO_Port ,LED2_Pin);
 	HAL_GPIO_TogglePin(LED1_GPIO_Port ,LED1_Pin);
 }
@@ -58,7 +65,8 @@ void  BTN3_SINGLE_Click_Handler()
 
 void  BTN4_SINGLE_Click_Handler()
 { 
-	  HAL_GPIO_TogglePin(LED3_GPIO_Port ,LED3_Pin);
+
+	HAL_GPIO_TogglePin(LED3_GPIO_Port ,LED3_Pin);
 	HAL_GPIO_TogglePin(LED2_GPIO_Port ,LED2_Pin);
 	HAL_GPIO_TogglePin(LED1_GPIO_Port ,LED1_Pin);
 }

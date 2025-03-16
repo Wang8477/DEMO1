@@ -4,13 +4,15 @@
  */
 
 /*Copy this file as "lv_port_indev.c" and set this value to "1" to enable content*/
-#if 0
+#if 1
 
 /*********************
  *      INCLUDES
  *********************/
-#include "lv_port_indev_template.h"
-#include "../../lvgl.h"
+#include "lv_port_indev.h"
+#include "lvgl.h"
+
+#include "key.h"
 
 /*********************
  *      DEFINES
@@ -88,62 +90,62 @@ void lv_port_indev_init(void)
      * -----------------*/
 
     /*Initialize your touchpad if you have*/
-    touchpad_init();
 
-    /*Register a touchpad input device*/
-    lv_indev_drv_init(&indev_drv);
-    indev_drv.type = LV_INDEV_TYPE_POINTER;
-    indev_drv.read_cb = touchpad_read;
-    indev_touchpad = lv_indev_drv_register(&indev_drv);
 
-    /*------------------
-     * Mouse
-     * -----------------*/
+    // /*Register a touchpad input device*/
+    // lv_indev_drv_init(&indev_drv);
+    // indev_drv.type = LV_INDEV_TYPE_POINTER;
+    // indev_drv.read_cb = touchpad_read;
+    // indev_touchpad = lv_indev_drv_register(&indev_drv);
 
-    /*Initialize your mouse if you have*/
-    mouse_init();
+    // /*------------------
+    //  * Mouse
+    //  * -----------------*/
 
-    /*Register a mouse input device*/
-    lv_indev_drv_init(&indev_drv);
-    indev_drv.type = LV_INDEV_TYPE_POINTER;
-    indev_drv.read_cb = mouse_read;
-    indev_mouse = lv_indev_drv_register(&indev_drv);
+    // /*Initialize your mouse if you have*/
+    // mouse_init();
 
-    /*Set cursor. For simplicity set a HOME symbol now.*/
-    lv_obj_t * mouse_cursor = lv_img_create(lv_scr_act());
-    lv_img_set_src(mouse_cursor, LV_SYMBOL_HOME);
-    lv_indev_set_cursor(indev_mouse, mouse_cursor);
+    // /*Register a mouse input device*/
+    // lv_indev_drv_init(&indev_drv);
+    // indev_drv.type = LV_INDEV_TYPE_POINTER;
+    // indev_drv.read_cb = mouse_read;
+    // indev_mouse = lv_indev_drv_register(&indev_drv);
 
-    /*------------------
-     * Keypad
-     * -----------------*/
+    // /*Set cursor. For simplicity set a HOME symbol now.*/
+    // lv_obj_t * mouse_cursor = lv_img_create(lv_scr_act());
+    // lv_img_set_src(mouse_cursor, LV_SYMBOL_HOME);
+    // lv_indev_set_cursor(indev_mouse, mouse_cursor);
 
-    /*Initialize your keypad or keyboard if you have*/
-    keypad_init();
+    // /*------------------
+    //  * Keypad
+    //  * -----------------*/
 
-    /*Register a keypad input device*/
-    lv_indev_drv_init(&indev_drv);
-    indev_drv.type = LV_INDEV_TYPE_KEYPAD;
-    indev_drv.read_cb = keypad_read;
-    indev_keypad = lv_indev_drv_register(&indev_drv);
+    // /*Initialize your keypad or keyboard if you have*/
+    // keypad_init();
 
-    /*Later you should create group(s) with `lv_group_t * group = lv_group_create()`,
-     *add objects to the group with `lv_group_add_obj(group, obj)`
-     *and assign this input device to group to navigate in it:
-     *`lv_indev_set_group(indev_keypad, group);`*/
+    // /*Register a keypad input device*/
+    // lv_indev_drv_init(&indev_drv);
+    // indev_drv.type = LV_INDEV_TYPE_KEYPAD;
+    // indev_drv.read_cb = keypad_read;
+    // indev_keypad = lv_indev_drv_register(&indev_drv);
 
-    /*------------------
-     * Encoder
-     * -----------------*/
+    // /*Later you should create group(s) with `lv_group_t * group = lv_group_create()`,
+    //  *add objects to the group with `lv_group_add_obj(group, obj)`
+    //  *and assign this input device to group to navigate in it:
+    //  *`lv_indev_set_group(indev_keypad, group);`*/
 
-    /*Initialize your encoder if you have*/
-    encoder_init();
+    // /*------------------
+    //  * Encoder
+    //  * -----------------*/
 
-    /*Register a encoder input device*/
-    lv_indev_drv_init(&indev_drv);
-    indev_drv.type = LV_INDEV_TYPE_ENCODER;
-    indev_drv.read_cb = encoder_read;
-    indev_encoder = lv_indev_drv_register(&indev_drv);
+    // /*Initialize your encoder if you have*/
+    // encoder_init();
+
+    // /*Register a encoder input device*/
+    // lv_indev_drv_init(&indev_drv);
+    // indev_drv.type = LV_INDEV_TYPE_ENCODER;
+    // indev_drv.read_cb = encoder_read;
+    // indev_encoder = lv_indev_drv_register(&indev_drv);
 
     /*Later you should create group(s) with `lv_group_t * group = lv_group_create()`,
      *add objects to the group with `lv_group_add_obj(group, obj)`
@@ -155,8 +157,9 @@ void lv_port_indev_init(void)
      * -----------------*/
 
     /*Initialize your button if you have*/
-    button_init();
+  
 
+    button_init();
     /*Register a button input device*/
     lv_indev_drv_init(&indev_drv);
     indev_drv.type = LV_INDEV_TYPE_BUTTON;
@@ -164,9 +167,11 @@ void lv_port_indev_init(void)
     indev_button = lv_indev_drv_register(&indev_drv);
 
     /*Assign buttons to points on the screen*/
-    static const lv_point_t btn_points[2] = {
-        {10, 10},   /*Button 0 -> x:10; y:10*/
-        {40, 100},  /*Button 1 -> x:40; y:100*/
+    static const lv_point_t btn_points[4] = {
+        {69, 255},   /*Button 0 -> screen_btn_1 center*/
+        {40, 225},  /*Button 1 -> x:40; y:100*/
+        {100,100},
+        {100,200},
     };
     lv_indev_set_button_points(indev_button, btn_points);
 }
@@ -357,13 +362,13 @@ static void encoder_handler(void)
 /*Initialize your buttons*/
 static void button_init(void)
 {
-    /*Your code comes here*/
+    // 调用key.c中的按键初始化函数
+    BTN_Init();
 }
 
 /*Will be called by the library to read the button*/
 static void button_read(lv_indev_drv_t * indev_drv, lv_indev_data_t * data)
 {
-
     static uint8_t last_btn = 0;
 
     /*Get the pressed button's ID*/
@@ -386,8 +391,8 @@ static int8_t button_get_pressed_id(void)
 {
     uint8_t i;
 
-    /*Check to buttons see which is being pressed (assume there are 2 buttons)*/
-    for(i = 0; i < 2; i++) {
+    /*检查全部4个按键*/
+    for(i = 0; i < 4; i++) {
         /*Return the pressed button's ID*/
         if(button_is_pressed(i)) {
             return i;
@@ -401,10 +406,9 @@ static int8_t button_get_pressed_id(void)
 /*Test if `id` button is pressed or not*/
 static bool button_is_pressed(uint8_t id)
 {
-
-    /*Your code comes here*/
-
-    return false;
+    /*使用read_button_GPIO函数检测按键状态*/
+    /*假设按键按下时为低电平(返回0)*/
+    return read_button_GPIO(id) == 0;
 }
 
 #else /*Enable this file at the top*/

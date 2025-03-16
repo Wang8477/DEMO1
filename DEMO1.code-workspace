@@ -8,7 +8,8 @@
 		"files.encoding": "gb2312",
 		"files.autoGuessEncoding": false,
 		"files.associations": {
-			"cstdint": "c"
+			"cstdint": "c",
+			"lv_port_disp.h": "c"
 		}
 	}
 }

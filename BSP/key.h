@@ -6,6 +6,11 @@
 #include "multi_button.h"
 
 
+extern bool simulate_touch;
+extern lv_coord_t touch_x;
+extern lv_coord_t touch_y;
+extern bool touch_pressed;
+
 
 void BTN_Init();
 void  BTN1_SINGLE_Click_Handler();
