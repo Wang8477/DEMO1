@@ -3234,7 +3234,7 @@
 
   <Group>
     <GroupName>lvgl/port</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -3310,7 +3310,7 @@
 
   <Group>
     <GroupName>guider</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -3333,6 +3333,18 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
+      <PathWithFileName>..\custom\lv_analogclock.c</PathWithFileName>
+      <FilenameWithoutPath>lv_analogclock.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>10</GroupNumber>
+      <FileNumber>252</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
       <PathWithFileName>..\generated\events_init.c</PathWithFileName>
       <FilenameWithoutPath>events_init.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
@@ -3340,7 +3352,7 @@
     </File>
     <File>
       <GroupNumber>10</GroupNumber>
-      <FileNumber>252</FileNumber>
+      <FileNumber>253</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3352,7 +3364,7 @@
     </File>
     <File>
       <GroupNumber>10</GroupNumber>
-      <FileNumber>253</FileNumber>
+      <FileNumber>254</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3364,7 +3376,7 @@
     </File>
     <File>
       <GroupNumber>10</GroupNumber>
-      <FileNumber>254</FileNumber>
+      <FileNumber>255</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3376,7 +3388,31 @@
     </File>
     <File>
       <GroupNumber>10</GroupNumber>
-      <FileNumber>255</FileNumber>
+      <FileNumber>256</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\generated\setup_scr_screen_2.c</PathWithFileName>
+      <FilenameWithoutPath>setup_scr_screen_2.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>10</GroupNumber>
+      <FileNumber>257</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\generated\setup_scr_screen_3.c</PathWithFileName>
+      <FilenameWithoutPath>setup_scr_screen_3.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>10</GroupNumber>
+      <FileNumber>258</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3388,7 +3424,7 @@
     </File>
     <File>
       <GroupNumber>10</GroupNumber>
-      <FileNumber>256</FileNumber>
+      <FileNumber>259</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3400,7 +3436,7 @@
     </File>
     <File>
       <GroupNumber>10</GroupNumber>
-      <FileNumber>257</FileNumber>
+      <FileNumber>260</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
@@ -3412,13 +3448,49 @@
     </File>
     <File>
       <GroupNumber>10</GroupNumber>
-      <FileNumber>258</FileNumber>
+      <FileNumber>261</FileNumber>
       <FileType>1</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\custom\lv_analogclock.c</PathWithFileName>
-      <FilenameWithoutPath>lv_analogclock.c</FilenameWithoutPath>
+      <PathWithFileName>..\generated\guider_fonts\lv_font_montserratMedium_17.c</PathWithFileName>
+      <FilenameWithoutPath>lv_font_montserratMedium_17.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>10</GroupNumber>
+      <FileNumber>262</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\generated\guider_fonts\lv_font_montserratMedium_19.c</PathWithFileName>
+      <FilenameWithoutPath>lv_font_montserratMedium_19.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>10</GroupNumber>
+      <FileNumber>263</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\generated\guider_fonts\lv_font_montserratMedium_21.c</PathWithFileName>
+      <FilenameWithoutPath>lv_font_montserratMedium_21.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>10</GroupNumber>
+      <FileNumber>264</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\generated\guider_fonts\lv_font_SourceHanSerifSC_Regular_17.c</PathWithFileName>
+      <FilenameWithoutPath>lv_font_SourceHanSerifSC_Regular_17.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

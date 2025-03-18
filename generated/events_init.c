@@ -15,21 +15,19 @@
 #include "freemaster_client.h"
 #endif
 
+extern int screen_analog_clock_1_hour_value ;
+extern int screen_analog_clock_1_min_value ;
+extern int screen_analog_clock_1_sec_value;
 
-static void screen_event_handler (lv_event_t *e)
-{
-	lv_event_code_t code = lv_event_get_code(e);
+static bool set_flag=false;
 
-	switch (code) {
-	case LV_EVENT_CLICKED:
-	{
-		ui_load_scr_animation(&guider_ui, &guider_ui.screen_1, guider_ui.screen_1_del, &guider_ui.screen_del, setup_scr_screen_1, LV_SCR_LOAD_ANIM_MOVE_LEFT, 200, 200, false, true);
-		break;
-	}
-	default:
-		break;
-	}
-}
+static unsigned short int alarm_min=0;
+static unsigned short int alarm_hour=0;
+static char buf[4];
+static bool set=false;
+static unsigned short int month=3,day=16,hour=0,min=0;
+static unsigned short int set_clock_flag=0;
+static unsigned short int set_clock=0;
 static void screen_btn_1_event_handler (lv_event_t *e)
 {
 	lv_event_code_t code = lv_event_get_code(e);
@@ -37,7 +35,7 @@ static void screen_btn_1_event_handler (lv_event_t *e)
 	switch (code) {
 	case LV_EVENT_CLICKED:
 	{
-		ui_load_scr_animation(&guider_ui, &guider_ui.screen_1, guider_ui.screen_1_del, &guider_ui.screen_del, setup_scr_screen_1, LV_SCR_LOAD_ANIM_NONE, 200, 200, false, true);
+		ui_load_scr_animation(&guider_ui, &guider_ui.screen_1, guider_ui.screen_1_del, &guider_ui.screen_del, setup_scr_screen_1, LV_SCR_LOAD_ANIM_OVER_RIGHT, 200, 200, true, true);
 		break;
 	}
 	default:
@@ -46,8 +44,267 @@ static void screen_btn_1_event_handler (lv_event_t *e)
 }
 void events_init_screen(lv_ui *ui)
 {
-	lv_obj_add_event_cb(ui->screen, screen_event_handler, LV_EVENT_ALL, ui);
 	lv_obj_add_event_cb(ui->screen_btn_1, screen_btn_1_event_handler, LV_EVENT_ALL, ui);
+}
+static void screen_1_btn_1_event_handler (lv_event_t *e)
+{
+	lv_event_code_t code = lv_event_get_code(e);
+
+	switch (code) {
+	case LV_EVENT_CLICKED:
+	{
+		ui_load_scr_animation(&guider_ui, &guider_ui.screen_2, guider_ui.screen_2_del, &guider_ui.screen_1_del, setup_scr_screen_2, LV_SCR_LOAD_ANIM_OVER_RIGHT, 200, 200, true, true);
+		break;
+	}
+	default:
+		break;
+	}
+}
+static void screen_1_btn_2_event_handler (lv_event_t *e)
+{
+	lv_event_code_t code = lv_event_get_code(e);
+
+	switch (code) {
+	case LV_EVENT_CLICKED:
+	{
+		lv_ui *ui = lv_event_get_user_data(e);
+	if(set==true){
+	  set_flag=!set_flag;
+	  switch(set_flag)
+	  {
+	    case true :
+	      lv_obj_set_style_text_color(ui->screen_1_alarm_min, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+	      // ç§»é™¤è¾¹æ??
+	      lv_obj_set_style_border_width(ui->screen_1_alarm_min, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+	
+	      lv_obj_set_style_text_color(ui->screen_1_alarm_hour, lv_color_hex(0xFF0000), LV_PART_MAIN | LV_STATE_DEFAULT);
+	      // å?é€‰ï¼šæ·»åŠ è¾¹æ?†çªå‡ºæ˜¾ç¤?
+	      lv_obj_set_style_border_width(ui->screen_1_alarm_hour, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+	      lv_obj_set_style_border_color(ui->screen_1_alarm_hour, lv_color_hex(0xFF0000), LV_PART_MAIN | LV_STATE_DEFAULT);
+	      break;
+	    case false :
+	    lv_obj_set_style_text_color(ui->screen_1_alarm_hour, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+	    // ç§»é™¤è¾¹æ??
+	    lv_obj_set_style_border_width(ui->screen_1_alarm_hour, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+	    lv_obj_set_style_text_color(ui->screen_1_alarm_min, lv_color_hex(0xFF0000), LV_PART_MAIN | LV_STATE_DEFAULT);
+	    // å?é€‰ï¼šæ·»åŠ è¾¹æ?†çªå‡ºæ˜¾ç¤?
+	    lv_obj_set_style_border_width(ui->screen_1_alarm_min, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+	    lv_obj_set_style_border_color(ui->screen_1_alarm_min, lv_color_hex(0xFF0000), LV_PART_MAIN | LV_STATE_DEFAULT);
+	    break;
+	    default:break;
+	  }
+	}
+		break;
+	}
+	default:
+		break;
+	}
+}
+static void screen_1_btn_3_event_handler (lv_event_t *e)
+{
+	lv_event_code_t code = lv_event_get_code(e);
+
+	switch (code) {
+	case LV_EVENT_CLICKED:
+	{
+		
+	lv_ui *ui = lv_event_get_user_data(e);
+	if(set_flag==false&&set==true)
+	{
+	if(alarm_min<60)alarm_min++;
+	else alarm_min=0;
+	sprintf(buf,"%02d",alarm_min);
+	lv_label_set_text(ui->screen_1_alarm_min, buf);
+	}
+	if(set_flag==true&&set==true)
+	{
+	if(alarm_hour<12)alarm_hour++;
+	else alarm_hour=0;
+	sprintf(buf,"%02d",alarm_hour);
+	lv_label_set_text(ui->screen_1_alarm_hour, buf);
+	}
+		break;
+	}
+	default:
+		break;
+	}
+}
+static void screen_1_btn_4_event_handler (lv_event_t *e)
+{
+	lv_event_code_t code = lv_event_get_code(e);
+
+	switch (code) {
+	case LV_EVENT_CLICKED:
+	{
+		set=!set;
+		break;
+	}
+	default:
+		break;
+	}
+}
+void events_init_screen_1(lv_ui *ui)
+{
+	lv_obj_add_event_cb(ui->screen_1_btn_1, screen_1_btn_1_event_handler, LV_EVENT_ALL, ui);
+	lv_obj_add_event_cb(ui->screen_1_btn_2, screen_1_btn_2_event_handler, LV_EVENT_ALL, ui);
+	lv_obj_add_event_cb(ui->screen_1_btn_3, screen_1_btn_3_event_handler, LV_EVENT_ALL, ui);
+	lv_obj_add_event_cb(ui->screen_1_btn_4, screen_1_btn_4_event_handler, LV_EVENT_ALL, ui);
+}
+static void screen_2_btn_1_event_handler (lv_event_t *e)
+{
+	lv_event_code_t code = lv_event_get_code(e);
+
+	switch (code) {
+	case LV_EVENT_CLICKED:
+	{
+		ui_load_scr_animation(&guider_ui, &guider_ui.screen_3, guider_ui.screen_3_del, &guider_ui.screen_2_del, setup_scr_screen_3, LV_SCR_LOAD_ANIM_OVER_RIGHT, 200, 200, true, true);
+		break;
+	}
+	default:
+		break;
+	}
+}
+static void screen_2_btn_2_event_handler (lv_event_t *e)
+{
+	lv_event_code_t code = lv_event_get_code(e);
+
+	switch (code) {
+	case LV_EVENT_CLICKED:
+	{
+		if(set_clock==1)
+	{
+	  set_clock_flag++;
+	  if(set_clock_flag==4)set_clock_flag=0;
+		switch(set_clock_flag)
+		{
+		  case 0:
+		    lv_obj_set_style_text_color(guider_ui.screen_2_month, lv_color_hex(0xFF0000), LV_PART_MAIN | LV_STATE_DEFAULT);
+		    lv_obj_set_style_text_color(guider_ui.screen_2_day, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+		    lv_obj_set_style_text_color(guider_ui.screen_2_hour, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+		    lv_obj_set_style_text_color(guider_ui.screen_2_min, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+		    break;
+		  case 1:
+		    lv_obj_set_style_text_color(guider_ui.screen_2_month, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+		    lv_obj_set_style_text_color(guider_ui.screen_2_day, lv_color_hex(0xFF0000), LV_PART_MAIN | LV_STATE_DEFAULT);
+		    lv_obj_set_style_text_color(guider_ui.screen_2_hour, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+		    lv_obj_set_style_text_color(guider_ui.screen_2_min, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+		    break;
+		  case 2:
+		    lv_obj_set_style_text_color(guider_ui.screen_2_month, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+		    lv_obj_set_style_text_color(guider_ui.screen_2_day, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+		    lv_obj_set_style_text_color(guider_ui.screen_2_hour, lv_color_hex(0xFF0000), LV_PART_MAIN | LV_STATE_DEFAULT);
+		    lv_obj_set_style_text_color(guider_ui.screen_2_min, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+		    break;
+		  case 3:
+		    lv_obj_set_style_text_color(guider_ui.screen_2_month, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+		    lv_obj_set_style_text_color(guider_ui.screen_2_day, lv_color_hex(0x000000), LV_PART_MAIN | LV_STATE_DEFAULT);
+	}
+		break;
+	}
+	default:
+		break;
+	}
+	}
+}
+static void screen_2_btn_3_event_handler (lv_event_t *e)
+{
+	lv_event_code_t code = lv_event_get_code(e);
+
+	switch (code) {
+	case LV_EVENT_CLICKED:
+	{
+		if(set_clock_flag==0&&set_clock==1)
+		{
+	  	month=(1+month)%13;
+	  	sprintf(buf,"%02d",month);
+	  	lv_label_set_text(guider_ui.screen_2_month, buf);
+		}
+		if(set_clock_flag==1&&set_clock==1)
+		{
+	  	day=(1+day)%31;
+	  	sprintf(buf,"%02d",day);
+	  	lv_label_set_text(guider_ui.screen_2_day, buf);
+		}
+		if(set_clock_flag==2&&set_clock==1)
+		{
+	  	hour=(1+hour)%12;
+	  	sprintf(buf,"%02d",hour);
+	  	lv_label_set_text(guider_ui.screen_2_hour, buf);
+		}
+		if(set_clock_flag==3&&set_clock==1)
+		{
+	  	min=(1+min)%60;
+	  	sprintf(buf,"%02d",min);
+	  	lv_label_set_text(guider_ui.screen_2_min, buf);
+		}
+		break;
+	}
+	default:
+		break;
+	}
+}
+static void screen_2_btn_4_event_handler (lv_event_t *e)
+{
+	lv_event_code_t code = lv_event_get_code(e);
+
+	switch (code) {
+	case LV_EVENT_CLICKED:
+	{
+		set_clock=1+set_clock%3;
+		if(set_clock==2)
+		{
+			char date_buf[20];
+			sprintf(date_buf, "%02d/%02d", month, day);  // ¸ñÊ½»¯ÈÕÆÚ×Ö·û´®
+            lv_label_set_text(guider_ui.screen_datetext_1, date_buf);
+			screen_analog_clock_1_hour_value = hour;
+            screen_analog_clock_1_min_value = min;
+            screen_analog_clock_1_sec_value = 0;  // ÃëÖÓÖØÖÃÎª0
+		}
+		break;
+	}
+	default:
+		break;
+	}
+}
+void events_init_screen_2(lv_ui *ui)
+{
+	lv_obj_add_event_cb(ui->screen_2_btn_1, screen_2_btn_1_event_handler, LV_EVENT_ALL, ui);
+	lv_obj_add_event_cb(ui->screen_2_btn_2, screen_2_btn_2_event_handler, LV_EVENT_ALL, ui);
+	lv_obj_add_event_cb(ui->screen_2_btn_3, screen_2_btn_3_event_handler, LV_EVENT_ALL, ui);
+	lv_obj_add_event_cb(ui->screen_2_btn_4, screen_2_btn_4_event_handler, LV_EVENT_ALL, ui);
+}
+static void screen_3_event_handler (lv_event_t *e)
+{
+	lv_event_code_t code = lv_event_get_code(e);
+
+	switch (code) {
+	case LV_EVENT_CLICKED:
+	{
+		ui_load_scr_animation(&guider_ui, &guider_ui.screen, guider_ui.screen_del, &guider_ui.screen_3_del, setup_scr_screen, LV_SCR_LOAD_ANIM_OVER_LEFT, 200, 200, true, true);
+		break;
+	}
+	default:
+		break;
+	}
+}
+static void screen_3_btn_1_event_handler (lv_event_t *e)
+{
+	lv_event_code_t code = lv_event_get_code(e);
+
+	switch (code) {
+	case LV_EVENT_CLICKED:
+	{
+		ui_load_scr_animation(&guider_ui, &guider_ui.screen, guider_ui.screen_del, &guider_ui.screen_3_del, setup_scr_screen, LV_SCR_LOAD_ANIM_NONE, 200, 200, true, true);
+		break;
+	}
+	default:
+		break;
+	}
+}
+void events_init_screen_3(lv_ui *ui)
+{
+	lv_obj_add_event_cb(ui->screen_3, screen_3_event_handler, LV_EVENT_ALL, ui);
+	lv_obj_add_event_cb(ui->screen_3_btn_1, screen_3_btn_1_event_handler, LV_EVENT_ALL, ui);
 }
 
 void events_init(lv_ui *ui)

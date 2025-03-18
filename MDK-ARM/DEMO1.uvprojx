@@ -1730,6 +1730,11 @@
               <FilePath>..\custom\custom.c</FilePath>
             </File>
             <File>
+              <FileName>lv_analogclock.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\custom\lv_analogclock.c</FilePath>
+            </File>
+            <File>
               <FileName>events_init.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\generated\events_init.c</FilePath>
@@ -1750,6 +1755,16 @@
               <FilePath>..\generated\setup_scr_screen_1.c</FilePath>
             </File>
             <File>
+              <FileName>setup_scr_screen_2.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\generated\setup_scr_screen_2.c</FilePath>
+            </File>
+            <File>
+              <FileName>setup_scr_screen_3.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\generated\setup_scr_screen_3.c</FilePath>
+            </File>
+            <File>
               <FileName>widgets_init.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\generated\widgets_init.c</FilePath>
@@ -1765,9 +1780,24 @@
               <FilePath>..\generated\guider_fonts\lv_font_montserratMedium_16.c</FilePath>
             </File>
             <File>
-              <FileName>lv_analogclock.c</FileName>
+              <FileName>lv_font_montserratMedium_17.c</FileName>
               <FileType>1</FileType>
-              <FilePath>..\custom\lv_analogclock.c</FilePath>
+              <FilePath>..\generated\guider_fonts\lv_font_montserratMedium_17.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_font_montserratMedium_19.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\generated\guider_fonts\lv_font_montserratMedium_19.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_font_montserratMedium_21.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\generated\guider_fonts\lv_font_montserratMedium_21.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_font_SourceHanSerifSC_Regular_17.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\generated\guider_fonts\lv_font_SourceHanSerifSC_Regular_17.c</FilePath>
             </File>
           </Files>
         </Group>

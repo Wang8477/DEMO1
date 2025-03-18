@@ -22,6 +22,7 @@ typedef struct
 	bool screen_del;
 	lv_obj_t *screen_cont_1;
 	lv_obj_t *screen_analog_clock_1;
+	lv_obj_t *screen_datetext_1;
 	lv_obj_t *screen_cont_2;
 	lv_obj_t *screen_btn_1;
 	lv_obj_t *screen_btn_1_label;
@@ -30,8 +31,10 @@ typedef struct
 	lv_obj_t *screen_1;
 	bool screen_1_del;
 	lv_obj_t *screen_1_cont_1;
-	lv_obj_t *screen_1_label_1;
 	lv_obj_t *screen_1_spangroup_1;
+	lv_obj_t *screen_1_alarm_min;
+	lv_obj_t *screen_1_alarm_hour;
+	lv_obj_t *screen_1_label_3;
 	lv_obj_t *screen_1_btn_1;
 	lv_obj_t *screen_1_btn_1_label;
 	lv_obj_t *screen_1_btn_2;
@@ -40,6 +43,34 @@ typedef struct
 	lv_obj_t *screen_1_btn_3_label;
 	lv_obj_t *screen_1_btn_4;
 	lv_obj_t *screen_1_btn_4_label;
+	lv_obj_t *screen_2;
+	bool screen_2_del;
+	lv_obj_t *screen_2_cont_1;
+	lv_obj_t *screen_2_label_3;
+	lv_obj_t *screen_2_month;
+	lv_obj_t *screen_2_hour;
+	lv_obj_t *screen_2_label_5;
+	lv_obj_t *screen_2_min;
+	lv_obj_t *screen_2_day;
+	lv_obj_t *screen_2_label_9;
+	lv_obj_t *screen_2_label_8;
+	lv_obj_t *screen_2_btn_1;
+	lv_obj_t *screen_2_btn_1_label;
+	lv_obj_t *screen_2_btn_2;
+	lv_obj_t *screen_2_btn_2_label;
+	lv_obj_t *screen_2_btn_3;
+	lv_obj_t *screen_2_btn_3_label;
+	lv_obj_t *screen_2_btn_4;
+	lv_obj_t *screen_2_btn_4_label;
+	lv_obj_t *screen_3;
+	bool screen_3_del;
+	lv_obj_t *screen_3_cont_1;
+	lv_obj_t *screen_3_list_1;
+	lv_obj_t *screen_3_list_1_item0;
+	lv_obj_t *screen_3_list_1_item1;
+	lv_obj_t *screen_3_list_1_item2;
+	lv_obj_t *screen_3_btn_1;
+	lv_obj_t *screen_3_btn_1_label;
 }lv_ui;
 
 typedef void (*ui_setup_scr_t)(lv_ui * ui);
@@ -75,9 +106,13 @@ extern lv_ui guider_ui;
 
 void setup_scr_screen(lv_ui *ui);
 void setup_scr_screen_1(lv_ui *ui);
+void setup_scr_screen_2(lv_ui *ui);
+void setup_scr_screen_3(lv_ui *ui);
 
 LV_FONT_DECLARE(lv_font_montserratMedium_12)
 LV_FONT_DECLARE(lv_font_montserratMedium_16)
+LV_FONT_DECLARE(lv_font_montserratMedium_19)
+LV_FONT_DECLARE(lv_font_montserratMedium_21)
 
 
 #ifdef __cplusplus
