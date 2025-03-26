@@ -139,7 +139,7 @@ void MX_FREERTOS_Init(void) {
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of LCDTask */
-  osThreadDef(LCDTask, StartLCDTask, osPriorityNormal, 0, 1024);
+  osThreadDef(LCDTask, StartLCDTask, osPriorityNormal, 0, 2024);
   LCDTaskHandle = osThreadCreate(osThread(LCDTask), NULL);
 
   /* definition and creation of TIMETask03 */

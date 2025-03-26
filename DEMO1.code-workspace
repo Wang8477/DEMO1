@@ -9,7 +9,8 @@
 		"files.autoGuessEncoding": false,
 		"files.associations": {
 			"cstdint": "c",
-			"lv_port_disp.h": "c"
+			"lv_port_disp.h": "c",
+			"widgets_init.h": "c"
 		}
 	}
 }

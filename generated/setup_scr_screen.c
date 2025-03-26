@@ -17,8 +17,8 @@
 
 
 int screen_analog_clock_1_hour_value = 3;
-int screen_analog_clock_1_min_value = 20;
-int screen_analog_clock_1_sec_value = 50;
+int screen_analog_clock_1_min_value = 0;
+int screen_analog_clock_1_sec_value = 30;
 void setup_scr_screen(lv_ui *ui)
 {
 	//Write codes screen
@@ -152,7 +152,7 @@ void setup_scr_screen(lv_ui *ui)
 	//Write codes screen_btn_2
 	ui->screen_btn_2 = lv_btn_create(ui->screen_cont_2);
 	ui->screen_btn_2_label = lv_label_create(ui->screen_btn_2);
-	lv_label_set_text(ui->screen_btn_2_label, "Button");
+	lv_label_set_text(ui->screen_btn_2_label, "Back");
 	lv_label_set_long_mode(ui->screen_btn_2_label, LV_LABEL_LONG_WRAP);
 	lv_obj_align(ui->screen_btn_2_label, LV_ALIGN_CENTER, 0, 0);
 	lv_obj_set_style_pad_all(ui->screen_btn_2, 0, LV_STATE_DEFAULT);

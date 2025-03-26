@@ -35,6 +35,8 @@ typedef struct
 	lv_obj_t *screen_1_alarm_min;
 	lv_obj_t *screen_1_alarm_hour;
 	lv_obj_t *screen_1_label_3;
+	lv_obj_t *screen_1_roller_1;
+	lv_obj_t *screen_1_roller_2;
 	lv_obj_t *screen_1_btn_1;
 	lv_obj_t *screen_1_btn_1_label;
 	lv_obj_t *screen_1_btn_2;
@@ -69,6 +71,12 @@ typedef struct
 	lv_obj_t *screen_3_list_1_item0;
 	lv_obj_t *screen_3_list_1_item1;
 	lv_obj_t *screen_3_list_1_item2;
+	lv_obj_t *screen_3_bar_2;
+	lv_obj_t *screen_3_bar_1;
+	lv_obj_t *screen_3_label_2;
+	lv_obj_t *screen_3_label_1;
+	lv_obj_t *screen_3_temp;
+	lv_obj_t *screen_3_voltage;
 	lv_obj_t *screen_3_btn_1;
 	lv_obj_t *screen_3_btn_1_label;
 }lv_ui;

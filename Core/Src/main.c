@@ -75,12 +75,63 @@ void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN 0 */
 extern osMutexId myMutexHandle;
 volatile int con=0;
-  char localBuffer[32];
-  char timeBuffer[32];
-  char dateBuffer[32];
-  RTC_TimeTypeDef sTime;
- RTC_DateTypeDef sDate;
+
  lv_ui guider_ui;
+
+
+extern int screen_analog_clock_1_hour_value ;
+extern int screen_analog_clock_1_min_value ;
+extern int screen_analog_clock_1_sec_value;
+extern unsigned short int alarm_min;
+extern unsigned short int alarm_hour;
+
+volatile bool need_ui_update = false; // UI更新标志
+// 在main.c中添加UI更新函数
+void update_ui_if_needed(void)
+{
+  static uint32_t last_update = 0;
+  uint32_t now = HAL_GetTick();
+  
+  // 检查当前屏幕是否是screen_3
+  bool is_screen3_active = (lv_scr_act() == guider_ui.screen_3);
+  
+  // 添加额外的安全检查，防止在屏幕切换过程中更新UI
+  if(need_ui_update && (now - last_update > 200) && is_screen3_active) {
+    // 再次检查确认当前屏幕仍然是screen_3
+    if(lv_scr_act() != guider_ui.screen_3) {
+      return; // 如果屏幕已经改变，立即退出不更新
+    }
+    
+    last_update = now;
+    need_ui_update = false;
+    
+    // 更新前先检查UI元素是否有效
+    if(guider_ui.screen_3_temp != NULL && lv_obj_is_valid(guider_ui.screen_3_temp)) {
+      char temp_str[20];
+      sprintf(temp_str, "%.1f C", temperature);
+      lv_label_set_text(guider_ui.screen_3_temp, temp_str);
+    }
+    
+    if(guider_ui.screen_3_bar_2 != NULL && lv_obj_is_valid(guider_ui.screen_3_bar_2)) {
+      int temp_value = (int)(temperature);
+      if(temp_value < 0) temp_value = 0;
+      if(temp_value > 100) temp_value = 100;
+      lv_bar_set_value(guider_ui.screen_3_bar_2, temp_value, LV_ANIM_ON);
+    }
+    
+    // 电压显示和进度条同样添加检查
+    if(guider_ui.screen_3_voltage != NULL && lv_obj_is_valid(guider_ui.screen_3_voltage)) {
+      char volt_str[20];
+      sprintf(volt_str, "%.2f V", voltage);
+      lv_label_set_text(guider_ui.screen_3_voltage, volt_str);
+    }
+    
+    if(guider_ui.screen_3_bar_1 != NULL && lv_obj_is_valid(guider_ui.screen_3_bar_1)) {
+      int volt_value = (int)(voltage * 100);
+      lv_bar_set_value(guider_ui.screen_3_bar_1, volt_value, LV_ANIM_ON);
+    }
+  }
+}
 /* USER CODE END 0 */
 
 /**
@@ -208,7 +259,7 @@ void StartLCDTask(void const * argument)
 //    //ST7789_DrawFilledRectangle(192, 10, 224, 40, BLACK);
     osMutexWait(myMutexHandle, osWaitForever);
 	lv_task_handler();
-
+  update_ui_if_needed();
    osMutexRelease(myMutexHandle);
    osDelay(10);
   }
@@ -217,15 +268,35 @@ void StartLCDTask(void const * argument)
  void StartADCTask(void const * argument)
 {
   /* USER CODE BEGIN StartADCTask */
+  char volt_str[20];
 	//hadc1.Instance->CR2 |= ADC_CR2_DDS;
    // HAL_ADC_Start_DMA(&hadc1, (uint32_t*)&adcValue, 1);
   /* Infinite loop */
   for(;;)
   {
      // ADC值
-	
-    // voltage = (float)adcValue * 3.3f / 4095.0f;
-    
+     HAL_ADC_Start(&hadc1);
+	  HAL_ADC_PollForConversion(&hadc1, 50);   //等待转换完成，50为最大等待时间，单位为ms
+		if(HAL_IS_BIT_SET(HAL_ADC_GetState(&hadc1), HAL_ADC_STATE_REG_EOC))
+		{
+		voltage = HAL_ADC_GetValue(&hadc1)*3.3f/4096;   //获取AD值
+		}
+    need_ui_update = true;  // 设置更新标志
+  //   //voltage = (float)adcValue * 3.3f / 4095.0f;
+  //  if(osMutexWait(myMutexHandle, 10) == osOK) {
+  //    // 更新屏幕显示（如果当前屏幕是screen_3）
+  //    if(lv_scr_act() == guider_ui.screen_3) {
+  //      // 更新电压文本
+  //      sprintf(volt_str, "%.2f V", voltage);
+  //      lv_label_set_text(guider_ui.screen_3_voltage, volt_str);
+       
+  //      // 更新电压进度条（将电压值映射到0-330范围）
+  //      int volt_value = (int)(voltage * 100);
+  //      lv_bar_set_value(guider_ui.screen_3_bar_1, volt_value, LV_ANIM_ON);
+  //    }
+  //    // 释放互斥量
+  //    osMutexRelease(myMutexHandle);
+  //  }
      osDelay(100);
   }
   /* USER CODE END StartADCTask */
@@ -247,25 +318,48 @@ void StartLM75Task(void const * argument)
 {
   /* USER CODE BEGIN StartLM75Task */
 	LM75AD_Init();
+  char temp_str[20];
   /* Infinite loop */
   for(;;)
   {
 	temperature = LM75AD_GetTemp();
+  need_ui_update = true;  // 设置更新标志
+  // 获取互斥量
+//    if(osMutexWait(myMutexHandle, 10) == osOK) {
+//    // 更新屏幕显示（如果当前屏幕是screen_3）
+//    if(lv_scr_act() == guider_ui.screen_3) {
+//      // 更新温度文本
+//      sprintf(temp_str, "%.1f C", temperature);
+//      lv_label_set_text(guider_ui.screen_3_temp, temp_str);
+     
+//      // 更新温度进度条（假设温度范围是0-100）
+//      int temp_value = (int)(temperature);
+//      if(temp_value < 0) temp_value = 0;
+//      if(temp_value > 100) temp_value = 100;
+//      lv_bar_set_value(guider_ui.screen_3_bar_2, temp_value, LV_ANIM_ON);
+//    }
+//    // 释放互斥量
+//    osMutexRelease(myMutexHandle);
+//  }
     osDelay(500);
   }
   /* USER CODE END StartLM75Task */
 }
 
-void StartRTCTask(void const * argument)
+void StartBEEPTask(void const * argument)
 {
   /* USER CODE BEGIN StartRTCTask */
  
   /* Infinite loop */
   for(;;)
   {
-
-    
-    osDelay(1000);
+    if(alarm_hour==screen_analog_clock_1_hour_value && alarm_min==screen_analog_clock_1_min_value&&screen_analog_clock_1_sec_value==0)
+    {
+      HAL_GPIO_TogglePin(BEEP_GPIO_Port,BEEP_Pin);
+		osDelay(3000);
+		HAL_GPIO_TogglePin(BEEP_GPIO_Port,BEEP_Pin);
+    } 
+    osDelay(500);
   }
   /* USER CODE END StartRTCTask */
 }

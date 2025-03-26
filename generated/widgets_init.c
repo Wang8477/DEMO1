@@ -64,13 +64,9 @@ void clock_count(int *hour, int *min, int *sec)
     if(*min == 60)
     {
         *min = 0;
-        if(*hour < 12)
-        {
-            (*hour)++;
-        } else {
-            (*hour)++;
-            *hour = *hour %12;
-        }
+        (*hour)++;
+        *hour = *hour %12;
+        
     }
 }
 #endif
