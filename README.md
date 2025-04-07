@@ -5,8 +5,8 @@
 STM32F411RE-Nucleo64核心板  
 st7789LCD(8针SPI,BLK浮空可用)  
 外围电路  
-![屏幕图片](pic\schematics_1.png "screen")
-![屏幕图片](pic\schematics_2.png "screen")
+![屏幕图片](\pic\schematics_1.png "screen")
+![屏幕图片](\pic\schematics_2.png "screen")
 ## 目前实现功能
 页面一：时间表盘显示  
 页面二：闹钟设置  
