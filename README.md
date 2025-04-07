@@ -5,8 +5,8 @@
 STM32F411RE-Nucleo64核心板?  
 st7789LCD(8针SPI,BLK浮空可用)  
 外围电路  
-![电路图片](https://github.com/Wang8477/STM32-Freertos-lvgl-/blob/master/pic/schematics_1.png "schematics_1")
-![电路图片](https://github.com/Wang8477/STM32-Freertos-lvgl-/blob/master/pic/schematics_2.png "schematics_2")
+![电路图片](pic/schematics_1.png "schematics_1")
+![电路图片](pic/schematics_2.png "schematics_2")
 ## 目前实现功能
 页面一：时间表盘显示  
 页面二：闹钟设置  
