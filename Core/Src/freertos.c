@@ -22,11 +22,11 @@
 #include "task.h"
 #include "main.h"
 #include "cmsis_os.h"
-#include "lvgl.h"
+
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "lvgl.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -139,7 +139,7 @@ void MX_FREERTOS_Init(void) {
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of LCDTask */
-  osThreadDef(LCDTask, StartLCDTask, osPriorityNormal, 0, 2024);
+  osThreadDef(LCDTask, StartLCDTask, osPriorityNormal, 0, 1024);
   LCDTaskHandle = osThreadCreate(osThread(LCDTask), NULL);
 
   /* definition and creation of TIMETask03 */

@@ -14,7 +14,9 @@
 #include "widgets_init.h"
 #include "custom.h"
 
-
+extern unsigned short int alarm_min;
+extern unsigned short int alarm_hour;
+char buf[4];
 
 void setup_scr_screen_1(lv_ui *ui)
 {
@@ -79,7 +81,9 @@ void setup_scr_screen_1(lv_ui *ui)
 
 	//Write codes screen_1_alarm_min
 	ui->screen_1_alarm_min = lv_label_create(ui->screen_1_cont_1);
-	lv_label_set_text(ui->screen_1_alarm_min, "00");
+	//lv_label_set_text(ui->screen_1_alarm_min, "00");
+	sprintf(buf,"%02d",alarm_min);
+	lv_label_set_text(ui->screen_1_alarm_min, buf);
 	lv_label_set_long_mode(ui->screen_1_alarm_min, LV_LABEL_LONG_WRAP);
 	lv_obj_set_pos(ui->screen_1_alarm_min, 151, 30);
 	lv_obj_set_size(ui->screen_1_alarm_min, 47, 28);
@@ -102,7 +106,9 @@ void setup_scr_screen_1(lv_ui *ui)
 
 	//Write codes screen_1_alarm_hour
 	ui->screen_1_alarm_hour = lv_label_create(ui->screen_1_cont_1);
-	lv_label_set_text(ui->screen_1_alarm_hour, "00");
+	//lv_label_set_text(ui->screen_1_alarm_hour, "00");
+	sprintf(buf,"%02d",alarm_hour);
+	lv_label_set_text(ui->screen_1_alarm_hour, buf);
 	lv_label_set_long_mode(ui->screen_1_alarm_hour, LV_LABEL_LONG_WRAP);
 	lv_obj_set_pos(ui->screen_1_alarm_hour, 42, 29);
 	lv_obj_set_size(ui->screen_1_alarm_hour, 48, 27);
@@ -152,6 +158,8 @@ void setup_scr_screen_1(lv_ui *ui)
 	lv_obj_set_pos(ui->screen_1_roller_1, 28, 80);
 	lv_obj_set_width(ui->screen_1_roller_1, 79);
 
+	lv_roller_set_selected(ui->screen_1_roller_1, alarm_hour, LV_ANIM_ON);
+
 	//Write style for screen_1_roller_1, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
 	lv_obj_set_style_radius(ui->screen_1_roller_1, 10, LV_PART_MAIN|LV_STATE_DEFAULT);
 	lv_obj_set_style_bg_opa(ui->screen_1_roller_1, 255, LV_PART_MAIN|LV_STATE_DEFAULT);
@@ -184,6 +192,8 @@ void setup_scr_screen_1(lv_ui *ui)
 	lv_roller_set_options(ui->screen_1_roller_2, "0\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12\n13\n14\n15\n16\n17\n18\n19\n20\n21\n22\n23\n24\n25\n26\n27\n28\n29\n30\n31\n32\n33\n34\n35\n36\n37\n38\n39\n40\n41\n42\n43\n44\n45\n46\n47\n48\n49\n50\n51\n52\n53\n54\n55\n56\n57\n58\n59", LV_ROLLER_MODE_INFINITE);
 	lv_obj_set_pos(ui->screen_1_roller_2, 128, 80);
 	lv_obj_set_width(ui->screen_1_roller_2, 79);
+
+	lv_roller_set_selected(ui->screen_1_roller_2, alarm_min, LV_ANIM_ON);
 
 	//Write style for screen_1_roller_2, Part: LV_PART_MAIN, State: LV_STATE_DEFAULT.
 	lv_obj_set_style_radius(ui->screen_1_roller_2, 10, LV_PART_MAIN|LV_STATE_DEFAULT);

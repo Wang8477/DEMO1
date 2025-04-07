@@ -81,7 +81,7 @@
           </BeforeMake>
           <AfterMake>
             <RunUserProg1>0</RunUserProg1>
-            <RunUserProg2>0</RunUserProg2>
+            <RunUserProg2>1</RunUserProg2>
             <UserProg1Name></UserProg1Name>
             <UserProg2Name></UserProg2Name>
             <UserProg1Dos16Mode>0</UserProg1Dos16Mode>
@@ -339,7 +339,7 @@
               <MiscControls></MiscControls>
               <Define>USE_HAL_DRIVER,STM32F411xE</Define>
               <Undefine></Undefine>
-              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Middlewares/Third_Party/FreeRTOS/Source/include;../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS;../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;../BSP;..\LVGL;..\LVGL\lvgl;..\LVGL\lvgl\porting;..\LVGL\lvgl\src;..\custom;..\generated</IncludePath>
+              <IncludePath>../Core/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc;../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy;../Middlewares/Third_Party/FreeRTOS/Source/include;../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS;../Middlewares/Third_Party/FreeRTOS/Source/portable/RVDS/ARM_CM4F;../Drivers/CMSIS/Device/ST/STM32F4xx/Include;../Drivers/CMSIS/Include;../BSP;../LVGL;../LVGL/lvgl;../LVGL/lvgl/porting;../LVGL/lvgl/src;../custom;../generated</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -422,11 +422,6 @@
               <FileName>i2c.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Core/Src/i2c.c</FilePath>
-            </File>
-            <File>
-              <FileName>rtc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Core/Src/rtc.c</FilePath>
             </File>
             <File>
               <FileName>spi.c</FileName>
@@ -610,16 +605,6 @@
               <FilePath>../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_i2c_ex.c</FilePath>
             </File>
             <File>
-              <FileName>stm32f4xx_hal_rtc.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rtc.c</FilePath>
-            </File>
-            <File>
-              <FileName>stm32f4xx_hal_rtc_ex.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_rtc_ex.c</FilePath>
-            </File>
-            <File>
               <FileName>stm32f4xx_hal_spi.c</FileName>
               <FileType>1</FileType>
               <FilePath>../Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_spi.c</FilePath>
@@ -718,6 +703,11 @@
               <FileName>key.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\BSP\key.c</FilePath>
+            </File>
+            <File>
+              <FileName>BEEP.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\BSP\BEEP.c</FilePath>
             </File>
           </Files>
         </Group>

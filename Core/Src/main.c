@@ -22,7 +22,6 @@
 #include "adc.h"
 #include "dma.h"
 #include "i2c.h"
-#include "rtc.h"
 #include "spi.h"
 #include "tim.h"
 #include "gpio.h"
@@ -38,6 +37,7 @@
 #include "gui_guider.h"
 #include "events_init.h"
 #include "custom.h"
+#include "BEEP.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -85,27 +85,27 @@ extern int screen_analog_clock_1_sec_value;
 extern unsigned short int alarm_min;
 extern unsigned short int alarm_hour;
 
-volatile bool need_ui_update = false; // UI更新标志
-// 在main.c中添加UI更新函数
+volatile bool need_ui_update = false; // UI
+// 
 void update_ui_if_needed(void)
 {
   static uint32_t last_update = 0;
   uint32_t now = HAL_GetTick();
   
-  // 检查当前屏幕是否是screen_3
+  // creen_3
   bool is_screen3_active = (lv_scr_act() == guider_ui.screen_3);
   
-  // 添加额外的安全检查，防止在屏幕切换过程中更新UI
+  // UI
   if(need_ui_update && (now - last_update > 200) && is_screen3_active) {
-    // 再次检查确认当前屏幕仍然是screen_3
+    // creen_3
     if(lv_scr_act() != guider_ui.screen_3) {
-      return; // 如果屏幕已经改变，立即退出不更新
+      return; // 
     }
     
     last_update = now;
     need_ui_update = false;
     
-    // 更新前先检查UI元素是否有效
+    // 
     if(guider_ui.screen_3_temp != NULL && lv_obj_is_valid(guider_ui.screen_3_temp)) {
       char temp_str[20];
       sprintf(temp_str, "%.1f C", temperature);
@@ -119,7 +119,7 @@ void update_ui_if_needed(void)
       lv_bar_set_value(guider_ui.screen_3_bar_2, temp_value, LV_ANIM_ON);
     }
     
-    // 电压显示和进度条同样添加检查
+    // 
     if(guider_ui.screen_3_voltage != NULL && lv_obj_is_valid(guider_ui.screen_3_voltage)) {
       char volt_str[20];
       sprintf(volt_str, "%.2f V", voltage);
@@ -164,11 +164,11 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_DMA_Init();
-  MX_RTC_Init();
   MX_ADC1_Init();
   MX_I2C1_Init();
   MX_SPI1_Init();
   MX_TIM10_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -209,10 +209,9 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_LSI;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
   RCC_OscInitStruct.HSIState = RCC_HSI_ON;
   RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
   RCC_OscInitStruct.PLL.PLLM = 8;
@@ -247,16 +246,43 @@ void StartLCDTask(void const * argument)
   lv_init();	
   lv_port_disp_init();
   lv_port_indev_init();
-  setup_ui(&guider_ui);
-    events_init(&guider_ui);
-    custom_init(&guider_ui);
   
+osMutexWait(myMutexHandle, osWaitForever);
+
+// 创建启动标志
+lv_obj_t* logo_cont = lv_obj_create(lv_scr_act());
+lv_obj_set_size(logo_cont, LV_HOR_RES, LV_VER_RES);
+lv_obj_set_style_bg_color(logo_cont, lv_color_hex(0x000000), 0);
+
+// 添加文本
+lv_obj_t* logo_label = lv_label_create(logo_cont);
+lv_label_set_text(logo_label, "MY CLOCK\nStarting...");
+lv_obj_set_style_text_font(logo_label, &lv_font_montserratMedium_21, 0);
+lv_obj_set_style_text_color(logo_label, lv_color_white(), 0);
+lv_obj_align(logo_label, LV_ALIGN_CENTER, 0, 0);
+
+// 显示动画效果
+for(int i = 0; i < 25; i++) {
+    lv_obj_set_style_text_opa(logo_label, i*10, 0);
+    lv_task_handler();
+    osDelay(100);
+}
+
+// 显示一段时间后删除
+osDelay(1000);
+lv_obj_del(logo_cont);
+osMutexRelease(myMutexHandle);
+  
+  // Initialize regular UI
+  setup_ui(&guider_ui);
+  events_init(&guider_ui);
+  custom_init(&guider_ui);
 
   /* Infinite loop */
   for(;;)
   {
     
-//    //ST7789_DrawFilledRectangle(192, 10, 224, 40, BLACK);
+
     osMutexWait(myMutexHandle, osWaitForever);
 	lv_task_handler();
   update_ui_if_needed();
@@ -276,27 +302,12 @@ void StartLCDTask(void const * argument)
   {
      // ADC值
      HAL_ADC_Start(&hadc1);
-	  HAL_ADC_PollForConversion(&hadc1, 50);   //等待转换完成，50为最大等待时间，单位为ms
+	  HAL_ADC_PollForConversion(&hadc1, 50);   
 		if(HAL_IS_BIT_SET(HAL_ADC_GetState(&hadc1), HAL_ADC_STATE_REG_EOC))
 		{
-		voltage = HAL_ADC_GetValue(&hadc1)*3.3f/4096;   //获取AD值
+		voltage = HAL_ADC_GetValue(&hadc1)*3.3f/4096;   
 		}
-    need_ui_update = true;  // 设置更新标志
-  //   //voltage = (float)adcValue * 3.3f / 4095.0f;
-  //  if(osMutexWait(myMutexHandle, 10) == osOK) {
-  //    // 更新屏幕显示（如果当前屏幕是screen_3）
-  //    if(lv_scr_act() == guider_ui.screen_3) {
-  //      // 更新电压文本
-  //      sprintf(volt_str, "%.2f V", voltage);
-  //      lv_label_set_text(guider_ui.screen_3_voltage, volt_str);
-       
-  //      // 更新电压进度条（将电压值映射到0-330范围）
-  //      int volt_value = (int)(voltage * 100);
-  //      lv_bar_set_value(guider_ui.screen_3_bar_1, volt_value, LV_ANIM_ON);
-  //    }
-  //    // 释放互斥量
-  //    osMutexRelease(myMutexHandle);
-  //  }
+    need_ui_update = true; 
      osDelay(100);
   }
   /* USER CODE END StartADCTask */
@@ -323,24 +334,7 @@ void StartLM75Task(void const * argument)
   for(;;)
   {
 	temperature = LM75AD_GetTemp();
-  need_ui_update = true;  // 设置更新标志
-  // 获取互斥量
-//    if(osMutexWait(myMutexHandle, 10) == osOK) {
-//    // 更新屏幕显示（如果当前屏幕是screen_3）
-//    if(lv_scr_act() == guider_ui.screen_3) {
-//      // 更新温度文本
-//      sprintf(temp_str, "%.1f C", temperature);
-//      lv_label_set_text(guider_ui.screen_3_temp, temp_str);
-     
-//      // 更新温度进度条（假设温度范围是0-100）
-//      int temp_value = (int)(temperature);
-//      if(temp_value < 0) temp_value = 0;
-//      if(temp_value > 100) temp_value = 100;
-//      lv_bar_set_value(guider_ui.screen_3_bar_2, temp_value, LV_ANIM_ON);
-//    }
-//    // 释放互斥量
-//    osMutexRelease(myMutexHandle);
-//  }
+  need_ui_update = true;  
     osDelay(500);
   }
   /* USER CODE END StartLM75Task */
@@ -349,15 +343,13 @@ void StartLM75Task(void const * argument)
 void StartBEEPTask(void const * argument)
 {
   /* USER CODE BEGIN StartRTCTask */
- 
+ BEEP_Init();
   /* Infinite loop */
   for(;;)
   {
     if(alarm_hour==screen_analog_clock_1_hour_value && alarm_min==screen_analog_clock_1_min_value&&screen_analog_clock_1_sec_value==0)
     {
-      HAL_GPIO_TogglePin(BEEP_GPIO_Port,BEEP_Pin);
-		osDelay(3000);
-		HAL_GPIO_TogglePin(BEEP_GPIO_Port,BEEP_Pin);
+		BEEP_os_music(MUSIC1,36);
     } 
     osDelay(500);
   }
