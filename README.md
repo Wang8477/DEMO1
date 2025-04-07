@@ -2,7 +2,7 @@
 
 ## 硬件
 
-STM32F411RE-Nucleo64核心板  
+STM32F411RE-Nucleo64核心板?  
 st7789LCD(8针SPI,BLK浮空可用)  
 外围电路  
 ![电路图片](https://github.com/Wang8477/STM32-Freertos-lvgl-/blob/master/pic/schematics_1.png "schematics_1")
@@ -22,5 +22,5 @@ lvgl8.3.11 https://github.com/lvgl/lvgl.git
 st7789_LCD https://github.com/Floyd-Fish/ST7789-STM32.git  
 按键驱动  https://github.com/0x1abin/MultiButton.git  
 ## 一些问题
-key.c中按键回调函数没有用到，可以删除或者增加其他功能
+key.c文件按键回调函数没有用到，可以删除或者添加其他功能
 
