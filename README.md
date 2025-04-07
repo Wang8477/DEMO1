@@ -5,8 +5,8 @@
 STM32F411RE-Nucleo64核心板  
 st7789LCD(8针SPI,BLK浮空可用)  
 外围电路  
-![屏幕图片](pic\schematics_1.png "screen")
-![屏幕图片](pic\schematics_2.png "screen")
+![电路图片](https://github.com/Wang8477/STM32-Freertos-lvgl-/blob/master/pic/schematics_1.png "schematics_1")
+![电路图片]([pic\schematics_2.png](https://github.com/Wang8477/STM32-Freertos-lvgl-/blob/master/pic/schematics_2.png) "schematics_2")
 ## 目前实现功能
 页面一：时间表盘显示  
 页面二：闹钟设置  
@@ -15,7 +15,7 @@ st7789LCD(8针SPI,BLK浮空可用)
 按键模拟点击lcd上像素点  
 蜂鸣器可简易“唱歌”
 
-![屏幕图片](pic\screen.png "screen")
+![屏幕图片](pic/screen.png "screen")
 
 ## 使用库
 lvgl8.3.11 https://github.com/lvgl/lvgl.git  
